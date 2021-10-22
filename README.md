@@ -6,7 +6,7 @@ performing efficient, real-time inference with
 The library is extensively documented and comes with various guided
 examples.
 
-This library was originally developed for VDL RobotSports,
+This library was originally developed for [VDL RobotSports](https://robotsports.nl),
 an industrial team based in the Netherlands participating in the RoboCup Middle
 Size League, and currently sees active use on the soccer robots.
 
