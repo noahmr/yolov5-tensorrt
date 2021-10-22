@@ -42,19 +42,15 @@ tool/example is available:
 
 
 For **object detection**, the following tools/examples are available:
-- [process_image](examples/image): load a single image from disk, detect objects, visualize the
-                    results and save to disk
-- [process_live](examples/live): open a live video stream (e.g. from a webcam), detect objects
-                    live and visualize the results through a GUI
-- [process_batch](examples/batch): load multiple files from disk, detect objects in all of them
-                    through batch inference, visualize the results and save
-                    to disk
+- [process_image](examples/image): detect objects in a single image
+- [process_live](examples/live): detect objects live in a video stream (e.g. webcam)
+- [process_batch](examples/batch): detect objects in multiple images (batch inference)
 
 
 ### Example Usage
 To get started quickly, build the library (using the steps below) and use the build_engine and process_image tools as following
 ```bash
-./build_engine --input INPUT_ONNX> --output yolov5.engine
+./build_engine --input INPUT_ONNX --output yolov5.engine
 ./process_image --engine yolov5.engine --input INPUT_IMAGE --output OUTPUT_IMAGE
 ```
 where you replace "INPUT_ONNX" with the path to your ONNX model, set "INPUT_IMAGE" to your input image, and "OUTPUT_IMAGE" to the desired output
@@ -63,14 +59,14 @@ where you replace "INPUT_ONNX" with the path to your ONNX model, set "INPUT_IMAG
 ## Code example
 
 Build the TensorRT engine in just three lines of C++ code:
-```C++
+```cpp
 yolov5::Builder builder;
 builder.init();
 builder.build("yolov5.onnx", "yolov5.engine");
 ```
 
 Next, efficiently detect objects using YoloV5 in six lines of C++ code:
-```C++
+```cpp
 yolov5::Detector detector;
 detector.init();
 detector.loadEngine("yolov5.engine");
