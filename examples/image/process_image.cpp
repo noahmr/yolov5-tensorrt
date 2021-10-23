@@ -222,34 +222,11 @@ int main(int argc, char* argv[])
         The detections are provided in the form of yolov5::Detection 
         objects. These contain information regarding the location in the image,
         confidence, and class.
-
-        We visualize the result using the OpenCV drawing functions.
     */
+    const cv::Scalar magenta(255, 51, 153); /*  BGR */
     for(unsigned int i = 0; i < detections.size(); ++i)
     {
-        const yolov5::Detection& det = detections[i];
-
-        /*  bounding box  */
-        const cv::Rect& bbox = det.boundingBox();
-        cv::rectangle(image, bbox, cv::Scalar(255, 0, 0));
-
-        /*  class  */
-        std::string className = det.className();
-        if(className.length() == 0)
-        {
-            const int classId = det.classId();
-            className = std::to_string(classId);
-        }
-        cv::putText(image, className,
-                        bbox.tl() + cv::Point(0, -10), cv::FONT_HERSHEY_PLAIN,
-                        1.0, cv::Scalar(255, 255, 255));
-
-        /*  score */
-        const double score = det.score();
-        cv::putText(image, std::to_string(score),
-                        bbox.tl() + cv::Point(bbox.width, -10), 
-                        cv::FONT_HERSHEY_PLAIN, 1.0, 
-                        cv::Scalar(255, 255, 255));
+        yolov5::visualizeDetection(detections[i], &image, magenta, 1.0);
     }
 
 

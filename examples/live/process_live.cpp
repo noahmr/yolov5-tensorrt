@@ -64,37 +64,6 @@ void printHelp()
                 "process_live --engine yolov5s.engine --camera 0" << std::endl;
 }
 
-void visualizeDetections(cv::Mat& image, 
-                std::vector<yolov5::Detection>& detections)
-{
-    for(unsigned int i = 0; i < detections.size(); ++i)
-    {
-        const yolov5::Detection& det = detections[i];
-
-        /*  bounding box  */
-        const cv::Rect& bbox = det.boundingBox();
-        cv::rectangle(image, bbox, cv::Scalar(255, 0, 0));
-
-        /*  class  */
-        std::string className = det.className();
-        if(className.length() == 0)
-        {
-            const int classId = det.classId();
-            className = std::to_string(classId);
-        }
-        cv::putText(image, className,
-                        bbox.tl() + cv::Point(0, -10), cv::FONT_HERSHEY_PLAIN,
-                        1.0, cv::Scalar(255, 255, 255));
-
-        /*  score */
-        const double score = det.score();
-        cv::putText(image, std::to_string(score),
-                        bbox.tl() + cv::Point(bbox.width, -10), 
-                        cv::FONT_HERSHEY_PLAIN, 1.0, 
-                        cv::Scalar(255, 255, 255));
-    }
-}
-
 int main(int argc, char* argv[])
 {
     /*  
@@ -219,7 +188,11 @@ int main(int argc, char* argv[])
         /*
             Visualize the detections
         */
-        visualizeDetections(image, detections);
+        for(unsigned int i = 0; i < detections.size(); ++i)
+        {
+            const cv::Scalar magenta(255, 51, 153); /*  BGR */
+            yolov5::visualizeDetection(detections[i], &image, magenta, 1.0);
+        }
         cv::imshow("live", image);
 
         cv::waitKey(1);

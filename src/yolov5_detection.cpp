@@ -81,6 +81,61 @@ bool Detection::setClassName(const std::string& name) noexcept
     return true;
 }
 
+Result visualizeDetection(const Detection& detection, cv::Mat* image,
+                            const cv::Scalar& color, const double& fontScale)
+{
+    if(image == nullptr)
+    {
+        return RESULT_SUCCESS;
+    }
+
+    try
+    {
+        /*  Draw bounding box around the detection  */
+        const int bboxThickness = 2;
+        const cv::Rect& bbox = detection.boundingBox();
+        cv::rectangle(*image, bbox, color, bboxThickness);
+
+        /*  "className: score"
+
+            or alternatively "classId: score"
+            if no class name is known
+
+            display the score with 2 decimal places
+        */
+        std::string className = detection.className();
+        if(className.length() == 0)
+        {
+            className = std::to_string(detection.classId());
+        }
+        std::stringstream ss;
+        ss << std::fixed << std::setprecision(2) << detection.score();
+        const std::string label = className + ": " + ss.str();
+
+        /*  Draw a rectangle above the bounding box, in which the
+            label will be written   */
+        const int textThickness = 1;
+
+        int baseline = 0;
+        const cv::Size textSize = cv::getTextSize(label, 
+                                        cv::FONT_HERSHEY_PLAIN,
+                                        fontScale, textThickness, &baseline);
+        const cv::Point tl(bbox.x - bboxThickness/2.0, bbox.y-textSize.height);
+        const cv::Rect labelRect(tl, textSize);
+        cv::rectangle(*image, labelRect, color, -1);  /*  filled rectangle */
+
+        /*  white text on top of the previously drawn rectangle */
+        const cv::Point bl(tl.x, bbox.y - bboxThickness/2.0);
+        cv::putText(*image, label, bl, cv::FONT_HERSHEY_PLAIN,
+                        fontScale, cv::Scalar(255, 255, 255), textThickness);
+    }
+    catch(const std::exception& e)
+    {
+        return RESULT_FAILURE_OPENCV_ERROR;
+    }
+    return RESULT_SUCCESS;
+}
+
 Classes::Classes()
 {
 }

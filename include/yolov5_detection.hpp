@@ -122,6 +122,32 @@ private:
 
 
 /**
+ * @brief               Helper method for visualizing a Detection in 
+ *                      an image
+ * 
+ * Draws the bounding box of the detection in the specified color, as well as
+ * a small label indicating the class(name) and the confidence. These texts
+ * are drawn in white.
+ * 
+ * @param detection     Detection
+ * @param image         Output image. Can be nullptr, in which case this
+ *                      function has no effect.
+ *
+ * @param color         Color of the bounding box
+ * @param fontScale     Scaling for the label. E.g. 1.0
+ * 
+ * Possible result codes:
+ * - RESULT_SUCCESS : if successful
+ * - RESULT_FAILURE_OPENCV_ERROR : in case an error was encountered when
+ *  visualizing using OpenCV
+ * 
+ * @return              Result code 
+ */
+Result visualizeDetection(const Detection& detection, cv::Mat* image,
+                            const cv::Scalar& color, const double& fontScale);
+
+
+/**
  * Represents the classes of your model
  * 
  * This can be used to map classIds to actual understandable names,

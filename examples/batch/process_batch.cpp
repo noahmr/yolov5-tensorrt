@@ -250,30 +250,8 @@ int main(int argc, char* argv[])
         const std::vector<yolov5::Detection>& lst = detections[i];
         for(unsigned int j = 0; j < lst.size(); ++j)
         {
-            const yolov5::Detection& det = lst[j];
-
-            /*  bounding box  */
-            const cv::Rect& bbox = det.boundingBox();
-            cv::rectangle(visualization, bbox, cv::Scalar(255, 0, 0));
-
-            /*  class  */
-            std::string className = det.className();
-            if(className.length() == 0)
-            {
-                const int classId = det.classId();
-                className = std::to_string(classId);
-            }
-            cv::putText(visualization, className,
-                            bbox.tl() + cv::Point(0, -10), 
-                            cv::FONT_HERSHEY_PLAIN, 1.0, 
-                            cv::Scalar(255, 255, 255));
-
-            /*  score */
-            const double score = det.score();
-            cv::putText(visualization, std::to_string(score),
-                            bbox.tl() + cv::Point(bbox.width, -10), 
-                            cv::FONT_HERSHEY_PLAIN, 1.0, 
-                            cv::Scalar(255, 255, 255));
+            const cv::Scalar magenta(255, 51, 153); /*  BGR */
+            yolov5::visualizeDetection(lst[j], &visualization, magenta, 1.0);
         }
 
         /*
