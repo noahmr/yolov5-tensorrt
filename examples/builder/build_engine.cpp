@@ -44,11 +44,23 @@ char* getCmdOption(char** begin, char** end, const std::string& option)
     return 0;
 }
 
-bool cmdOptionExists(char** begin, char** end, const std::string& option)
+bool cmdOptionExists(char** begin, char** end, const std::string& option, 
+                    bool value = false)
 {
     /*  From https://stackoverflow.com/questions/865668/parsing-
         command-line-arguments-in-c */
-    return std::find(begin, end, option) != end;
+    char** itr = std::find(begin, end, option);
+    if(itr == end)
+    {
+        return false;
+    }
+    if(value && itr == end-1)
+    {
+        std::cout << "Warning: option '" << option << "'"
+                << " requires a value" << std::endl;
+        return false;
+    }
+    return true;
 }
 
 void printHelp()
@@ -77,8 +89,8 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    if(!cmdOptionExists(argv, argv+argc, "--model") ||
-        !cmdOptionExists(argv, argv+argc, "--output"))
+    if(!cmdOptionExists(argv, argv+argc, "--model", true) ||
+        !cmdOptionExists(argv, argv+argc, "--output", true))
     {
         std::cout << "Missing mandatory argument" << std::endl;
         printHelp();
@@ -89,7 +101,7 @@ int main(int argc, char* argv[])
     const std::string outputFile(getCmdOption(argv, argv+argc, "--output"));
     
     yolov5::Precision precision = yolov5::PRECISION_FP32;   /*  default */
-    if(cmdOptionExists(argv, argv+argc, "--precision"))
+    if(cmdOptionExists(argv, argv+argc, "--precision", true))
     {
         const std::string s = getCmdOption(argv, argv+argc, "--precision");
         if(s == "fp32")

@@ -46,11 +46,23 @@ char* getCmdOption(char** begin, char** end, const std::string& option)
     return 0;
 }
 
-bool cmdOptionExists(char** begin, char** end, const std::string& option)
+bool cmdOptionExists(char** begin, char** end, const std::string& option, 
+                    bool value = false)
 {
     /*  From https://stackoverflow.com/questions/865668/parsing-
         command-line-arguments-in-c */
-    return std::find(begin, end, option) != end;
+    char** itr = std::find(begin, end, option);
+    if(itr == end)
+    {
+        return false;
+    }
+    if(value && itr == end-1)
+    {
+        std::cout << "Warning: option '" << option << "'"
+                << " requires a value" << std::endl;
+        return false;
+    }
+    return true;
 }
 
 void printHelp()
@@ -76,7 +88,7 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    if(!cmdOptionExists(argv, argv+argc, "--engine"))
+    if(!cmdOptionExists(argv, argv+argc, "--engine", true))
     {
         std::cout << "Missing mandatory argument" << std::endl;
         printHelp();
@@ -85,7 +97,7 @@ int main(int argc, char* argv[])
     const std::string engineFile(getCmdOption(argv, argv+argc, "--engine"));
 
     int cameraIndex = 0;
-    if(cmdOptionExists(argv, argv+argc, "--camera"))
+    if(cmdOptionExists(argv, argv+argc, "--camera", true))
     {
         const std::string option = 
                 getCmdOption(argv, argv+argc, "--camera");
@@ -93,7 +105,7 @@ int main(int argc, char* argv[])
     }
 
     std::string classesFile;
-    if(cmdOptionExists(argv, argv+argc, "--classes"))
+    if(cmdOptionExists(argv, argv+argc, "--classes", true))
     {
         classesFile = getCmdOption(argv, argv+argc, "--classes");
     }
