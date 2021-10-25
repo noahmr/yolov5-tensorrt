@@ -24,7 +24,7 @@ The goal of this library is to provide an accessible and robust method for perfo
 In addition to the C++ API, the library also comes with various tools/demos. Assuming that your YOLOv5 model is stored as <em>yolov5.onnx</em>, you can build a TensorRT engine using:
   
 ```bash
-./build_engine --input yolov5.onnx --output yolov5.engine
+./build_engine --model yolov5.onnx --output yolov5.engine
 ```
 The resulting engine will be stored to disk at <em>yolov5.engine</em>. For an overview of all available options for this tool, see [build_engine](examples/builder).
   
