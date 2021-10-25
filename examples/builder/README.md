@@ -18,6 +18,6 @@ Arguments:
 
 Assuming that your YOLOv5 model is <em>yolov5s.onnx</em> (i.e. the S variant of YOLOv5), you can build an engine with FP16 inference as following:
 ```
-./build_engine --input yolov5s.onnx --output yolov5s.engine --precision fp16
+./build_engine --model yolov5s.onnx --output yolov5s.engine --precision fp16
 ```
 The resulting engine will be stored to disk as <em>yolov5s.engine</em>. After this, you may perform inference using one of the other tools, such as [process_image](examples/image).
