@@ -5,11 +5,11 @@ specific hardware being used, and can be used repeadetly for object detection. N
 
 Basic usage:
 ```
-./build_engine --input INPUT_ONNX --output OUTPUT_ENGINE
+./build_engine --model ONNX_MODEL --output OUTPUT_ENGINE
 ```
 
 Arguments:
-- ```--input```: path to the input ONNX model
+- ```--model```: path to the input ONNX model
 - ```--output```: path at which the output engine should be written
 - ```--precision```: (optional) the precision that should be used for the engine. The available options are "fp32" and "fp16". This argument is optional, and if it is not specified, the default "fp32" is used
 
