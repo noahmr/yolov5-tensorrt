@@ -46,7 +46,7 @@ namespace yolov5
 namespace internal
 {
 
-int32_t dimsVolume(const nvinfer1::Dims& dims)
+int32_t dimsVolume(const nvinfer1::Dims& dims) noexcept
 {
     int32_t r = 0;
     if(dims.nbDims > 0)
@@ -345,7 +345,7 @@ Preprocessor::~Preprocessor() noexcept
 {
 }
 
-void Preprocessor::setLogger(std::shared_ptr<Logger> logger)
+void Preprocessor::setLogger(std::shared_ptr<Logger> logger) noexcept
 {
     _logger = logger;
 }

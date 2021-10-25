@@ -82,7 +82,8 @@ bool Detection::setClassName(const std::string& name) noexcept
 }
 
 Result visualizeDetection(const Detection& detection, cv::Mat* image,
-                            const cv::Scalar& color, const double& fontScale)
+                            const cv::Scalar& color, 
+                            const double& fontScale) noexcept
 {
     if(image == nullptr)
     {
@@ -136,11 +137,11 @@ Result visualizeDetection(const Detection& detection, cv::Mat* image,
     return RESULT_SUCCESS;
 }
 
-Classes::Classes()
+Classes::Classes() noexcept
 {
 }
 
-Classes::~Classes()
+Classes::~Classes() noexcept
 {
 }
 

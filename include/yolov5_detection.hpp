@@ -144,7 +144,8 @@ private:
  * @return              Result code 
  */
 Result visualizeDetection(const Detection& detection, cv::Mat* image,
-                            const cv::Scalar& color, const double& fontScale);
+                            const cv::Scalar& color, 
+                            const double& fontScale) noexcept;
 
 
 /**
@@ -156,10 +157,10 @@ Result visualizeDetection(const Detection& detection, cv::Mat* image,
 class Classes
 {
 public:
-    Classes();
+    Classes() noexcept;
 
     
-    ~Classes();
+    ~Classes() noexcept;
 
 public:
 
