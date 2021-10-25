@@ -1,4 +1,4 @@
-### YOLOv5-TensorRT
+# YOLOv5-TensorRT
 
 ![](./docs/demo.png)
   
@@ -15,66 +15,6 @@ The goal of this library is to provide an accessible and robust method for perfo
 - CUDA-accelerated pre-processing
 - Integration with OpenCV (with optionally also the OpenCV-CUDA module)
 - Extensive documentation available on all classes, methods and functions
-
-
-## <div align="center">Usage</div>
-
-<details>
-<summary>Command-line Usage</summary>
-In addition to the C++ API, the library also comes with various tools/demos. Assuming that your YOLOv5 model is stored as <em>yolov5.onnx</em>, you can build a TensorRT engine using:
-  
-```bash
-./build_engine --model yolov5.onnx --output yolov5.engine
-```
-The resulting engine will be stored to disk at <em>yolov5.engine</em>. For an overview of all available options for this tool, see [build_engine](examples/builder).
-  
-After the engine has been stored, you can load it and detect objects as following:
-```bash
-./process_image --engine yolov5.engine --input image.png --output result.png
-```
-A visualization of the result will be stored to disk at <em>result.png</em>. For an overview of all available options for this tool, see [process_image](examples/image).
-  
-</details>
-
-<details open>
-<summary>C++ usage</summary>
-This example assumes that your YOLOv5 model is stored as <em>yolov5.onnx</em>. Include <em>yolov5_builder.hpp</em> in your project, and build the TensorRT engine in just three lines of C++ code:
-  
-```cpp
-yolov5::Builder builder;
-builder.init();
-builder.build("yolov5.onnx", "yolov5.engine");
-```
-
-  Next, detect objects with YOLOv5 using the following code:
-```cpp
-yolov5::Detector detector;
-detector.init();
-detector.loadEngine("yolov5.engine");
-
-cv::Mat image = cv::imread("image.png");
-
-std::vector<yolov5::Detection> detections;
-detector.detect(image, &detections);
-```
-  
-</details>
-
-<details>
-<summary>Examples</summary>
-
-Various **documented** examples can be found in the [examples](examples) directory.
-
-In order to **build** a TensorRT engine based on an ONNX model, the following
-tool/example is available:
-- [build_engine](examples/builder): build a TensorRT engine based on your ONNX model
-
-For **object detection**, the following tools/examples are available:
-- [process_image](examples/image): detect objects in a single image
-- [process_live](examples/live): detect objects live in a video stream (e.g. webcam)
-- [process_batch](examples/batch): detect objects in multiple images (batch inference)
-  
-</details>
 
 
 ## <div align="center">Install</div>
@@ -107,12 +47,82 @@ make
 </details>
   
 
+
+## <div align="center">Usage</div>
+
+<details>
+<summary>Command-line Usage</summary>
+  
+In addition to the C++ API, the library also comes with various tools/demos. Assuming that your YOLOv5 model is stored as <em>yolov5.onnx</em>, you can build a TensorRT engine using:
+
+  
+```bash
+./build_engine --model yolov5.onnx --output yolov5.engine
+```
+The resulting engine will be stored to disk at <em>yolov5.engine</em>. For an overview of all available options for this tool, see [build_engine](examples/builder).
+  
+After the engine has been stored, you can load it and detect objects as following:
+```bash
+./process_image --engine yolov5.engine --input image.png --output result.png
+```
+A visualization of the result will be stored to disk at <em>result.png</em>. For an overview of all available options for this tool, see [process_image](examples/image).
+  
+</details>
+
+<details open>
+<summary>C++ usage</summary>
+
+Include ```yolov5_builder.hpp``` in your code. Assuming that your YOLOv5 model is stored as <em>yolov5.onnx</em>, you can then build the TensorRT engine using just three lines of C++ code:
+  
+```cpp
+yolov5::Builder builder;
+builder.init();
+builder.build("yolov5.onnx", "yolov5.engine");
+```
+
+  
+Include ```yolov5_detector.hpp``` in your code. You can then detect objects using the <em>Detector</em> class, with the following code:
+  
+```cpp
+yolov5::Detector detector;
+detector.init();
+detector.loadEngine("yolov5.engine");
+
+cv::Mat image = cv::imread("image.png");
+
+std::vector<yolov5::Detection> detections;
+detector.detect(image, &detections);
+```
+
+  
+</details>
+
+<details>
+<summary>Examples</summary>
+
+Various **documented** examples can be found in the [examples](examples) directory.
+
+In order to **build** a TensorRT engine based on an ONNX model, the following
+tool/example is available:
+- [build_engine](examples/builder): build a TensorRT engine based on your ONNX model
+
+For **object detection**, the following tools/examples are available:
+- [process_image](examples/image): detect objects in a single image
+- [process_live](examples/live): detect objects live in a video stream (e.g. webcam)
+- [process_batch](examples/batch): detect objects in multiple images (batch inference)
+  
+</details>
+ 
+
 ## <div align="center">About</div>
 
 This library was originally developed for [VDL RobotSports](https://robotsports.nl),
 an industrial team based in the Netherlands participating in the RoboCup Middle
 Size League, and currently sees active use on the soccer robots.
 
+<details>
+<summary>Citing</summary>
+  
 If you like this library and would like to cite it, please use the following (LateX):
 
 ```tex
@@ -124,7 +134,9 @@ If you like this library and would like to cite it, please use the following (La
   note         = {\url{https://github.com/noahmr/yolov5-tensorrt}}
 }
 ```
+</details>
 
+  
 ## <div align="center">License</div>
 
 Copyright (c) 2021, Noah van der Meer
