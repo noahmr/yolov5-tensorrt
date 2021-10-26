@@ -20,7 +20,7 @@ The goal of this library is to provide an accessible and robust method for perfo
 ## <div align="center">Install</div>
 
 <details>
-<summary>Platforms</summary>
+<summary>Platforms & Dependencies</summary>
   
 The library can be used on:
 - Most modern linux distributions
@@ -44,9 +44,27 @@ cd build
 cmake ..
 make
 ```
+This will build all of the example applications, as well as a shared library <em>yolov5-tensorrt.so</em>. Next, you can install the library using:
+```
+sudo make install
+```  
+</details>
+    
+<details>
+<summary>Including & Linking the library through pkg-config</summary>
+  
+After installing the library, in order to use the library in your own project, you can include and link it in the usual manner through [pkg-config](https://www.freedesktop.org/wiki/Software/pkg-config/). E.g. to get the include directories of the library, use:
+  
+```
+pkg-config --cflags yolov5-tensorrt
+```
+and similarly for linking:
+
+```
+pkg-config --libs yolov5-tensorrt
+```
 </details>
   
-
 
 ## <div align="center">Usage</div>
 
