@@ -1,0 +1,11 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=@CMAKE_INSTALL_PREFIX@
+includedir=${exec_prefix}/@CMAKE_INSTALL_INCLUDEDIR@
+libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
+
+Name: @PROJECT_NAME@
+Description: @PROJECT_DESCRIPTION@
+URL: https://github.com/noahmr/yolov5-tensorrt
+Version: @PROJECT_VERSION@
+Cflags: -I${includedir}/yolov5-tensorrt
+Libs: -L${libdir} -lyolov5-tensorrt
