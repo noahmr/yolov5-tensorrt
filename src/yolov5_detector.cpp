@@ -449,6 +449,23 @@ int Detector::batchSize() const noexcept
     return _batchSize();
 }
 
+cv::Size Detector::inferenceSize() const noexcept
+{
+    if(!isEngineLoaded())
+    {
+        if(_logger)
+        {
+            _logger->log(LOGGING_ERROR, "[Detector] inferenceSize() failure: "
+                        "no engine loaded");
+        }
+        return cv::Size(0, 0);
+    }
+    const auto& inputDims = _inputBinding.dims();
+    const int rows = inputDims.d[2];
+    const int cols = inputDims.d[3];
+    return cv::Size(cols, rows);
+}
+
 Result Detector::setLogger(std::shared_ptr<Logger> logger) noexcept
 {
     if(!logger)

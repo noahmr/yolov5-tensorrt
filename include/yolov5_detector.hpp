@@ -218,6 +218,13 @@ public:
      * 
      * An engine should have been loaded already.
      * 
+     * This method accepts input of any size, but providing an input
+     * of the exact size for which the network was configured will result in
+     * a lower detection time, since no pre-processing is required. The network
+     * input size can be retrieved using the inferenceSize() method.
+     * 
+     * 
+     * 
      * If any code other than RESULT_SUCCESS is returned, the output 'out' is
      * left untouched.
      * 
@@ -297,6 +304,16 @@ public:
      * @return                  Batch size
      */
     int batchSize() const noexcept;
+    
+    /**
+     * @brief                   Input size for which the network was configured
+     * 
+     * An engine should have been loaded already. If not, an error message is
+     * logged and Size(0, 0) is returned.
+     * 
+     * @return                  Size
+     */
+    cv::Size inferenceSize() const noexcept;
 
 
 	/// ***
