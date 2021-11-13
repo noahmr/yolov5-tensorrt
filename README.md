@@ -19,21 +19,23 @@ The goal of this library is to provide an accessible and robust method for perfo
 
 ## <div align="center">Install</div>
 
-<details>
-<summary>Platforms & Dependencies</summary>
-  
-The library can be used on:
+<details open>
+<summary>Platforms</summary>
+
 - Most modern linux distributions
 - NVIDIA L4T (Jetson platform)
+</details>
+  
+<details open>
+<summary>Dependencies</summary>
 
-Moreover, only 2 dependencies are needed:
-- TensorRT >=8 (libnvinfer libnvonnxparsers-dev)
+- TensorRT >=8 (including libnvonnxparsers-dev)
 - OpenCV
   
 </details>
   
 <details>
-<summary>Building from source</summary>
+<summary>Building and installing manually</summary>
   
 The software can be compiled using CMake and a modern C++ compiler (e.g. GCC)
 with support for C++14, using the following steps:
@@ -50,21 +52,7 @@ sudo make install
 ```  
 </details>
     
-<details>
-<summary>Including & Linking the library through pkg-config</summary>
-  
-After installing the library, in order to use the library in your own project, you can include and link it in the usual manner through [pkg-config](https://www.freedesktop.org/wiki/Software/pkg-config/). E.g. to get the include directories of the library, use:
-  
-```
-pkg-config --cflags yolov5-tensorrt
-```
-and similarly for linking:
-
-```
-pkg-config --libs yolov5-tensorrt
-```
-</details>
-  
+ 
 
 ## <div align="center">Usage</div>
 
@@ -130,7 +118,36 @@ For **object detection**, the following tools/examples are available:
 - [process_batch](examples/batch): detect objects in multiple images (batch inference)
   
 </details>
- 
+
+  
+<details>
+<summary>Importing the library in your project: CMake</summary>
+  
+After installing the library, you can include it in your CMake-based project through pkg-config using the following:
+```
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(YOLOV5_TENSORRT yolov5-tensorrt)
+```
+This will provide the usual ```YOLOV5_TENSORRT_INCLUDE_DIRS```, ```YOLOV5_TENSORRT_LIBRARIES``` and ```YOLOV5_TENSORRT_VERSION``` variables in CMake.
+</details>
+
+
+  
+<details>
+<summary>Importing the library in your project: pkg-config</summary>
+  
+After installing the library, in order to use the library in your own project, you can include and link it in the usual manner through [pkg-config](https://www.freedesktop.org/wiki/Software/pkg-config/). To get the include directories of the library, use:
+  
+```
+pkg-config --cflags yolov5-tensorrt
+```
+and similarly for linking:
+
+```
+pkg-config --libs yolov5-tensorrt
+```
+</details>
+  
 
 ## <div align="center">About</div>
 
