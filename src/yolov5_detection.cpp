@@ -188,8 +188,8 @@ Result Classes::loadFromFile(const std::string& filepath) noexcept
     {
         if(_logger)
         {
-            _logger->log(LOGGING_ERROR, "[Classes] loadFromFile() failure: "
-                    "could not open specified file");
+            _logger->logf(LOGGING_ERROR, "[Classes] loadFromFile() failure: "
+                    "could not open file '%s'", filepath.c_str());
         }
         return RESULT_FAILURE_FILESYSTEM_ERROR;
     }    
