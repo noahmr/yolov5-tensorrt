@@ -204,8 +204,8 @@ int main(int argc, char* argv[])
         Detect objects in the image using the detect(...) method. The
         detections are inserted into the 'detections' vector.
 
-        The detect(...) method can optionally also take an "InputType" 
-        parameter. This indicates the type of input image specified, e.g. BGR
+        The detect(...) method can optionally also flags. Through these flags,
+        the type of input image can be specified specified, e.g. BGR
         or RGB. By default, the detect(...) method assumes that the input
         is stored as BGR. Thus while not necessary in this case, for clarity 
         we specifically specify that the input is BGR here.

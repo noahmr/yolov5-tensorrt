@@ -51,7 +51,7 @@ Detector::~Detector() noexcept
 {
 }
 
-Result Detector::init() noexcept
+Result Detector::init(int flags) noexcept
 {
     /*  Initialize Logger */
     if(!_logger)
@@ -80,6 +80,61 @@ Result Detector::init() noexcept
                             " create TensorRT logger: %s", e.what());
             return RESULT_FAILURE_ALLOC;
         }
+    }
+
+    /*  Set up Preprocessor */
+    if(!_preprocessor)
+    {
+        try
+        {
+            const bool cvCudaAvailable = internal::opencvHasCuda();
+
+            if((flags & PREPROCESSOR_CVCUDA) && (flags & PREPROCESSOR_CVCPU))
+            {
+                _logger->log(LOGGING_ERROR, "[Detector] init() failure: "
+                            "both PREPROCESSOR_CVCUDA and PREPROCESSOR_CVCPU "
+                            "flags specified");
+                return RESULT_FAILURE_INVALID_INPUT;
+            }
+            
+            /*  If the CVCUDA flag was specified, OpenCV-CUDA has to be
+                available or fail   */
+            if(flags & PREPROCESSOR_CVCUDA && !cvCudaAvailable)
+            {
+                _logger->log(LOGGING_ERROR, "[Detector] init() failure: "
+                        "PREPROCESSOR_CVCUDA flag specified, but "
+                        "OpenCV-CUDA  pre-processor is not available.");
+                return RESULT_FAILURE_OPENCV_NO_CUDA;
+            }
+
+            bool useCudaPreprocessor = cvCudaAvailable;
+            if(flags & PREPROCESSOR_CVCPU)
+            {
+                useCudaPreprocessor = false;
+            }
+
+            if(useCudaPreprocessor)
+            {
+                _logger->log(LOGGING_INFO, "[Detector] Using OpenCV-CUDA "
+                            "pre-processor");
+                _preprocessor = 
+                        std::make_unique<internal::CvCudaPreprocessor>();
+            }
+            else
+            {
+                _logger->log(LOGGING_INFO, "[Detector] Using OpenCV-CPU "
+                            "pre-processor");
+                _preprocessor = 
+                        std::make_unique<internal::CvCpuPreprocessor>();
+            }
+        }
+        catch(const std::exception& e)
+        {
+            _logger->logf(LOGGING_ERROR, "[Detector] init() failure: "
+                        "could not set up preprocessor: %s", e.what());
+            return RESULT_FAILURE_ALLOC;
+        }
+        _preprocessor->setLogger(_logger);
     }
 
     /*  Initialize TensorRT runtime */
@@ -213,7 +268,7 @@ Result Detector::setClasses(const Classes& classes) noexcept
 
 Result Detector::detect(const cv::Mat& img, 
                     std::vector<Detection>* out,
-                    InputType inputType) noexcept
+                    int flags) noexcept
 {
     if(!isEngineLoaded())
     {
@@ -226,7 +281,7 @@ Result Detector::detect(const cv::Mat& img,
     }
 
     /**     Pre-processing      **/
-    if(!_preprocessor->setup( _inputBinding.dims(), inputType, _batchSize(),
+    if(!_preprocessor->setup( _inputBinding.dims(), flags, _batchSize(),
                             (float*)_deviceMemory.at(_inputBinding.index()) ))
     {
         _logger->log(LOGGING_ERROR, "[Detector] detect() failure: could not "
@@ -245,7 +300,7 @@ Result Detector::detect(const cv::Mat& img,
 
 Result Detector::detect(const cv::cuda::GpuMat& img, 
                     std::vector<Detection>* out,
-                    InputType inputType) noexcept
+                    int flags) noexcept
 {
     if(!isEngineLoaded())
     {
@@ -266,7 +321,7 @@ Result Detector::detect(const cv::cuda::GpuMat& img,
     }
 
     /**     Pre-processing      **/
-    if(!_preprocessor->setup(_inputBinding.dims(), inputType, _batchSize(),
+    if(!_preprocessor->setup(_inputBinding.dims(), flags, _batchSize(),
                             (float*)_deviceMemory.at(_inputBinding.index()) ))
     {
         _logger->log(LOGGING_ERROR, "[Detector] detect() failure: could not "
@@ -285,7 +340,7 @@ Result Detector::detect(const cv::cuda::GpuMat& img,
 
 Result Detector::detectBatch(const std::vector<cv::Mat>& images, 
                     std::vector<std::vector<Detection>>* out,
-                    InputType inputType) noexcept
+                    int flags) noexcept
 {
     if(!isEngineLoaded())
     {
@@ -312,7 +367,7 @@ Result Detector::detectBatch(const std::vector<cv::Mat>& images,
     const int numProcessed = MIN((int)images.size(), _batchSize());
 
     /**     Pre-processing      **/
-    if(!_preprocessor->setup(_inputBinding.dims(), inputType, _batchSize(), 
+    if(!_preprocessor->setup(_inputBinding.dims(), flags, _batchSize(), 
                             (float*)_deviceMemory.at(_inputBinding.index()) ))
     {
         _logger->log(LOGGING_ERROR, "[Detector] detectBatch() failure: could "
@@ -335,11 +390,8 @@ Result Detector::detectBatch(const std::vector<cv::Mat>& images,
     
 Result Detector::detectBatch(const std::vector<cv::cuda::GpuMat>& images, 
                     std::vector<std::vector<Detection>>* out,
-                    InputType inputType) noexcept
+                    int flags) noexcept
 {
-    YOLOV5_UNUSED(out);
-    YOLOV5_UNUSED(inputType);
-
     if(!isEngineLoaded())
     {
         if(_logger)
@@ -374,7 +426,7 @@ Result Detector::detectBatch(const std::vector<cv::cuda::GpuMat>& images,
     const int numProcessed = MIN((int)images.size(), _batchSize());
 
     /**     Pre-processing      **/
-    if(!_preprocessor->setup(_inputBinding.dims(), inputType, _batchSize(), 
+    if(!_preprocessor->setup(_inputBinding.dims(), flags, _batchSize(), 
                             (float*)_deviceMemory.at(_inputBinding.index()) ))
     {
         _logger->log(LOGGING_ERROR, "[Detector] detectBatch() failure: could "
@@ -576,31 +628,6 @@ Result Detector::_loadEngine(const std::vector<char>& data) noexcept
         return r;
     }
 
-    /*  Set up Preprocessor */
-    std::unique_ptr<internal::Preprocessor> preprocessor;
-    try
-    {
-        if(internal::opencvHasCuda())
-        {
-            _logger->log(LOGGING_INFO, "[Detector] Using OpenCV-CUDA "
-                        "pre-processor");
-            preprocessor = std::make_unique<internal::CvCudaPreprocessor>();
-        }
-        else
-        {
-            _logger->log(LOGGING_INFO, "[Detector] Using OpenCV-CPU "
-                        "pre-processor");
-            preprocessor = std::make_unique<internal::CvCpuPreprocessor>();
-        }
-    }
-    catch(const std::exception& e)
-    {
-        _logger->logf(LOGGING_ERROR, "[Detector] loadEngine() failure: "
-                    "could not set up preprocessor: %s", e.what());
-        return RESULT_FAILURE_ALLOC;
-    }
-    preprocessor->setLogger(_logger);
-
     /*  Set up memory on host for post-processing */
     std::vector<float> outputHostMemory;
     try
@@ -627,11 +654,14 @@ Result Detector::_loadEngine(const std::vector<char>& data) noexcept
     executionContext.swap(_trtExecutionContext);
     
     memory.swap(_deviceMemory);
-    preprocessor.swap(_preprocessor);
     outputHostMemory.swap(_outputHostMemory);
 
     input.swap(_inputBinding);
     output.swap(_outputBinding);
+
+    /*  Note: this is the PreProcessor::reset() method, not the reset()
+        method of unique_ptr (!)    */
+    _preprocessor->reset();
 
     _logger->log(LOGGING_INFO, "[Detector] Successfully loaded inference "
                 "engine");

@@ -205,6 +205,12 @@ public:
 
     virtual ~Preprocessor() noexcept;
 
+    enum InputType
+    {
+        INPUTTYPE_BGR       = 0,
+        INPUTTYPE_RGB
+    };
+
 public:
 
     void setLogger(std::shared_ptr<Logger> logger) noexcept;
@@ -215,7 +221,7 @@ public:
      * The implementation of the base class only manages the transforms.
      * 
      * @param inputDims     Engine input dimensions
-     * @param inputType     Type of input
+     * @param flags         Additional flags
      * @param batchSize     Number of images that will be processed (i.e. in
      *                      batch mode)
      * @param inputMemory   Start of input on the CUDA device
@@ -223,8 +229,10 @@ public:
      * @return              True on success, False otherwise
      */
     virtual bool setup(const nvinfer1::Dims& inputDims, 
-                        const InputType& inputType, const int& batchSize,
+                        const int& flags, const int& batchSize,
                         float* inputMemory) noexcept = 0;
+
+    virtual void reset() noexcept = 0;
 
     /**
      * @brief               Process the input
@@ -277,9 +285,11 @@ public:
 public:
 
     virtual bool setup(const nvinfer1::Dims& inputDims,
-                        const InputType& inputType, const int& batchSize,
+                        const int& flags, const int& batchSize,
                         float* inputMemory) 
                         noexcept override;
+
+    virtual void reset() noexcept override;
 
     virtual bool process(const int& index, 
                     const cv::Mat& input, const bool& last) noexcept override;
@@ -328,9 +338,11 @@ public:
 public:
 
     virtual bool setup(const nvinfer1::Dims& inputDims,
-                        const InputType& inputType, const int& batchSize,
+                        const int& flags, const int& batchSize,
                         float* inputMemory) 
                         noexcept override;
+
+    virtual void reset() noexcept override;
 
     virtual bool process(const int& index, 
                     const cv::Mat& input, const bool& last) noexcept override;

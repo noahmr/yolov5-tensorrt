@@ -96,12 +96,34 @@ public:
      * default logger provided by this library, which simply prints messages
      * to stdout.
      * 
+     * 
+     * This method will also set up the pre-processor that will be used for
+     * object detection. By default, the OpenCV-CUDA pre-processor is picked if
+     * it is available. If not (meaning either OpenCV was built without CUDA
+     * support, or no CUDA devices are currently available), a CPU based
+     * pre-processor is used. To change this behaviour, use the appropriate
+     * flags.
+     * 
+     * 
+     * Supported flags:
+     * - PREPROCESSOR_CVCUDA : specify that the OpenCV-CUDA pre-processor
+     *  should be used. If it is not available, this method fails and
+     * the RESULT_FAILURE_OPENCV_NO_CUDA code is returned.
+     * 
+     * - PREPROCESSOR_CVCPU : specify that the OpenCV-CPU pre-processor
+     *  should be used. This pre-processor is always available.
+     * 
+     * Any unsupported flags are ignored.
+     * 
+     * 
      * On success, RESULT_SUCCESS is returned and no messages are logged.
      * 
      * 
+     * @param flags             (Optional) Additional flags for initialization
+     * 
      * @return                  Result code
      */
-    Result init() noexcept;
+    Result init(int flags = 0) noexcept;
 
     
     /**
@@ -224,35 +246,95 @@ public:
      * input size can be retrieved using the inferenceSize() method.
      * 
      * 
+     * By default, this method assumes that your input is in BGR format. If
+     * this is not the case, this can be specified by setting the appropriate
+     * flags.
+     * 
+     * 
+     * Supported flags:
+     * - INPUT_BGR : specify that the input is in BGR format (opencv default)
+     * - INPUT_RGB :specify that the input is in RGB format
+
+     * Any unsupported flags are ignored.
+     * 
      * 
      * If any code other than RESULT_SUCCESS is returned, the output 'out' is
      * left untouched.
      * 
      * 
-     * @param img               Input image stored in CPU memory;
+     * @param img               Input images
      * @param out               Output; Can be nullptr
-     * @param inputType         (Optional) type/colorspace of the input
+     * @param flags             (Optional) Additional flags for detection
      * 
      * @return                  True on success, False otherwise
      */
     Result detect(const cv::Mat& img, 
                     std::vector<Detection>* out,
-                    InputType inputType = INPUT_BGR) noexcept;
+                    int flags = 0) noexcept;
 
-
+    /**
+     * @brief                   Detect objects in the specified image (in CUDA
+     *                          memory) using the YoloV5 model
+     * 
+     * See the documentation on detect(const cv::Mat&, std::vector<Detection>*, 
+     *      int) for more information.
+     */
     Result detect(const cv::cuda::GpuMat& img, 
                     std::vector<Detection>* out,
-                    InputType inputType = INPUT_BGR) noexcept;
+                    int flags = 0) noexcept;
 
+    /**
+     * @brief                   Detect objects in the specified images using
+     *                          batch inference with the YoloV5 model
+     * 
+     * An engine should have been loaded already.
+     * 
+     * This method accepts inputs of any size, but providing inputs
+     * of the exact size for which the network was configured will result in
+     * a lower detection time, since no pre-processing is required. The network
+     * input size can be retrieved using the inferenceSize() method.
+     * 
+     * Note that the inputs can potentially all have different sizes if this is
+     * desired.
+     * 
+     * 
+     * By default, this method assumes that your inputs are in BGR format. If
+     * this is not the case, this can be specified by setting the appropriate
+     * flags.
+     * 
+     * 
+     * Supported flags:
+     * - INPUT_BGR : specify that the inputs are all in BGR
+     *  format (opencv default)
+     * - INPUT_RGB : specify that the inputs are all in RGB format
 
+     * Any unsupported flags are ignored.
+     * 
+     * 
+     * If any code other than RESULT_SUCCESS is returned, the output 'out' is
+     * left untouched.
+     * 
+     * 
+     * @param images            Input images
+     * @param out               Outputs for each image.
+     * @param flags             (Optional) Additional flags for detection
+     * 
+     * @return                  True on success, False otherwise
+     */
     Result detectBatch(const std::vector<cv::Mat>& images, 
                     std::vector<std::vector<Detection>>* out,
-                    InputType inputType = INPUT_BGR) noexcept;
+                    int flags = 0) noexcept;
     
+    /**
+     * @brief                   Detect objects in the specified images (in CUDA
+     *                          memory) using batch inference with YoloV5
 
+     * See the documentation on detectBatch(const std::vector<cv::Mat>&, 
+     *      std::vector<Detection>*, int) for more information.
+     */
     Result detectBatch(const std::vector<cv::cuda::GpuMat>& images, 
                     std::vector<std::vector<Detection>>* out,
-                    InputType inputType = INPUT_BGR) noexcept;
+                    int flags = 0) noexcept;
 
 
     /// ***

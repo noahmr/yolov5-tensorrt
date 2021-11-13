@@ -403,12 +403,13 @@ cv::Rect Preprocessor::transformBbox(const int& index,
 }
 
 template <typename T>
-static void setupChannels(const cv::Size& size, const InputType& inputType, 
+static void setupChannels(const cv::Size& size, 
+                        const Preprocessor::InputType& inputType, 
                         float* inputPtr,
                         std::vector<T>& channels)
 {
     const int channelSize = size.area();
-    if(inputType == INPUT_BGR)  /*  INPUT_BGR   */
+    if(inputType == Preprocessor::INPUTTYPE_BGR)  /*  INPUT_BGR   */
     {
         /*  B channel will go here  */
         channels.push_back(T(size, CV_32FC1, inputPtr + 2 * channelSize));
@@ -417,7 +418,7 @@ static void setupChannels(const cv::Size& size, const InputType& inputType,
         /*  R channel will go here  */
         channels.push_back(T(size, CV_32FC1, inputPtr));
     }
-    else    /*  INPUT_RGB   */
+    else    /*  INPUTTYPE_RGB   */
     {
         /*  R channel will go here  */
         channels.push_back(T(size, CV_32FC1, inputPtr));
@@ -439,7 +440,7 @@ CvCpuPreprocessor::~CvCpuPreprocessor() noexcept
 }
 
 bool CvCpuPreprocessor::setup(const nvinfer1::Dims& inputDims,
-                            const InputType& inputType, const int& batchSize,
+                            const int& flags, const int& batchSize,
                             float* inputMemory) noexcept
 {
     if(!_cudaStream)
@@ -454,6 +455,18 @@ bool CvCpuPreprocessor::setup(const nvinfer1::Dims& inputDims,
         }
     }
 
+    if((flags & INPUT_RGB) && (flags & INPUT_BGR))
+    {
+        _logger->log(LOGGING_ERROR, "[CvCpuPreprocessor] setup() "
+                    "failure: both INPUT_RGB and INPUT_BGR flags specified"); 
+        return false;
+    }
+    InputType inputType = INPUTTYPE_BGR;
+    if(flags & INPUT_RGB)
+    {
+        inputType = INPUTTYPE_RGB;
+    }
+    
     if(_lastType == inputType && _lastBatchSize == batchSize)
     {
         return true;
@@ -491,6 +504,12 @@ bool CvCpuPreprocessor::setup(const nvinfer1::Dims& inputDims,
         return false;
     }
     return true;
+}
+
+void CvCpuPreprocessor::reset() noexcept
+{
+    /*  this will trigger setup() to take effect next time  */
+    _lastType = (InputType)-1;
 }
 
 bool CvCpuPreprocessor::process(const int& index, 
@@ -606,10 +625,22 @@ CvCudaPreprocessor::~CvCudaPreprocessor() noexcept
 }
 
 bool CvCudaPreprocessor::setup(const nvinfer1::Dims& inputDims,
-                            const InputType& inputType, const int& batchSize,
+                            const int& flags, const int& batchSize,
                             float* inputMemory) noexcept
 {
 #ifdef YOLOV5_OPENCV_HAS_CUDA
+    if((flags & INPUT_RGB) && (flags & INPUT_BGR))
+    {
+        _logger->log(LOGGING_ERROR, "[CvCudaPreprocessor] setup() "
+                    "failure: both INPUT_RGB and INPUT_BGR flags specified"); 
+        return false;
+    }
+    InputType inputType = INPUTTYPE_BGR;
+    if(flags & INPUT_RGB)
+    {
+        inputType = INPUTTYPE_RGB;
+    }
+
     if(_lastType == inputType && _lastBatchSize == batchSize)
     {
         return true;
@@ -644,13 +675,19 @@ bool CvCudaPreprocessor::setup(const nvinfer1::Dims& inputDims,
     return true;
 #else
     YOLOV5_UNUSED(inputDims);
-    YOLOV5_UNUSED(inputType);
+    YOLOV5_UNUSED(flags);
     YOLOV5_UNUSED(batchSize);
     YOLOV5_UNUSED(inputMemory);
     _logger->log(LOGGING_ERROR, "[CvCudaPreprocessor] setup() failure: "
                     "OpenCV without CUDA support");
     return false;
 #endif
+}
+
+void CvCudaPreprocessor::reset() noexcept
+{
+    /*  this will trigger setup() to take effect next time  */
+    _lastType = (InputType)-1;
 }
 
 bool CvCudaPreprocessor::process(const int& index, 

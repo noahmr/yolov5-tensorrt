@@ -177,13 +177,21 @@ bool precision_to_string(Precision p, std::string* out) noexcept;
 
 
 /**
- * Type of input provided to the Detector
+ * Additional flags that can be passed to the Detector
  */
-enum InputType
+enum DetectorFlag
 {
-    INPUT_BGR = 0,   /**<    3-channel image, BGR (opencv default)   */
+    INPUT_BGR =         1,
+    /**<    input image is in BGR colorspace(opencv default) */
 
-    INPUT_RGB        /**<    3-channel image, RGB    */
+    INPUT_RGB =         2,
+    /**<    input image is in RGB colorspace */
+
+    PREPROCESSOR_CVCUDA     =   4,
+    /**<    OpenCV-CUDA pre-processing should be used */
+    
+    PREPROCESSOR_CVCPU      =   8
+    /**<    OpenCV-CPU pre-processing should be used */
 };
 
 
