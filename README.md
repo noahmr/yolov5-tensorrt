@@ -4,8 +4,13 @@
   
 The goal of this library is to provide an accessible and robust method for performing efficient, real-time object detection with [YOLOv5](https://github.com/ultralytics/yolov5) using NVIDIA TensorRT. The library was developed with real-world deployment and robustness in mind. Moreover, the library is extensively documented and comes with various guided examples.
 
+<div align="center">
 
-
+[![platform](https://img.shields.io/badge/platform-linux%20%7C%20L4T-orange?style=for-the-badge)](https://github.com/noahmr/yolov5-tensorrt#install)
+[![api](https://img.shields.io/badge/api-c++-blue?style=for-the-badge)](https://github.com/noahmr/yolov5-tensorrt#usage)
+[![license](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
+</div>
+  
 ## <div align="center">Features</div>
 
 - FP32 and FP16 inference
@@ -22,7 +27,7 @@ The goal of this library is to provide an accessible and robust method for perfo
 <details open>
 <summary>Platforms</summary>
 
-- Most modern linux distributions
+- Modern Linux distros
 - NVIDIA L4T (Jetson platform)
 </details>
   
