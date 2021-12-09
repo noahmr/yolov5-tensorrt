@@ -19,7 +19,9 @@ The goal of this library is to provide an accessible and robust method for perfo
 - ONNX support
 - CUDA-accelerated pre-processing
 - Integration with OpenCV (with optionally also the OpenCV-CUDA module)
+- Modular logging and error reporting
 - Extensive documentation available on all classes, methods and functions
+
 
 
 ## <div align="center">Install</div>
@@ -35,6 +37,7 @@ The goal of this library is to provide an accessible and robust method for perfo
 <summary>Dependencies</summary>
 
 - TensorRT >=8 (including libnvonnxparsers-dev)
+- CUDA >= 10.2
 - OpenCV
   
 </details>
@@ -153,13 +156,27 @@ pkg-config --libs yolov5-tensorrt
 ```
 </details>
   
+<details open>
+<summary>Additional Resources</summary>
+  
+- [Use with Stereolabs ZED](https://github.com/noahmr/zed-yolov5)
+</details>
+  
+  
 
 ## <div align="center">About</div>
 
-This library was originally developed for [VDL RobotSports](https://robotsports.nl),
+This library is developed at [VDL RobotSports](https://robotsports.nl),
 an industrial team based in the Netherlands participating in the RoboCup Middle
 Size League, and currently sees active use on the soccer robots.
 
+<details>
+<summary>RobotSports Demo</summary>
+
+  ![](./docs/demo_robotsports.png)
+  
+</details>
+  
 <details>
 <summary>Citing</summary>
   
