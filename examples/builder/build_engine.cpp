@@ -68,7 +68,7 @@ void printHelp()
     std::cout << "Options:\n"
                 "-h --help :       show this help menu\n"
                 "--model :          [mandatory] specify the ONNX model file\n"
-                "--output :         [mandatory] specify the engine engine "
+                "--output :         [mandatory] specify the engine output "
                 "file\n"
                 "--precision :      [optional] specify the precision. "
                 "Options: fp32, fp16\n\n"
