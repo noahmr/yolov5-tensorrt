@@ -204,8 +204,9 @@ int main(int argc, char* argv[])
         }
         catch(const std::exception& e)
         {
-            std::cout << "Warning: could not load image " << filenames[i] 
+            std::cout << "Could not load image " << filenames[i] 
                         << " . Exception: " << e.what() << std::endl;
+            return 1;
         }
 
         if(!image.empty())
@@ -214,7 +215,9 @@ int main(int argc, char* argv[])
         }
         else
         {
-            std::cout << "Warning: empty image " << filenames[i] << std::endl;
+            std::cout << "Could not load image: empty image " 
+                        << filenames[i] << std::endl;
+            return 1;
         }
     }
 
@@ -255,6 +258,7 @@ int main(int argc, char* argv[])
         Visualize all of the detections & store to disk
     */
     cv::Mat visualization;
+    const cv::Scalar magenta(255, 51, 153); /*  BGR */
     for(unsigned int i = 0; i < detections.size(); ++i)
     {
         images[i].copyTo(visualization);
@@ -262,7 +266,6 @@ int main(int argc, char* argv[])
         const std::vector<yolov5::Detection>& lst = detections[i];
         for(unsigned int j = 0; j < lst.size(); ++j)
         {
-            const cv::Scalar magenta(255, 51, 153); /*  BGR */
             yolov5::visualizeDetection(lst[j], &visualization, magenta, 1.0);
         }
 
