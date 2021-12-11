@@ -7,12 +7,13 @@ The goal of this library is to provide an accessible and robust method for perfo
 <div align="center">
 
 [![platform](https://img.shields.io/badge/platform-linux%20%7C%20L4T-orange?style=for-the-badge)](https://github.com/noahmr/yolov5-tensorrt#install)
-[![api](https://img.shields.io/badge/api-c++-blue?style=for-the-badge)](https://github.com/noahmr/yolov5-tensorrt#usage)
+[![api](https://img.shields.io/badge/api-c++%20%7C%20Python-blue?style=for-the-badge)](https://github.com/noahmr/yolov5-tensorrt#usage)
 [![license](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
 </div>
   
 ## <div align="center">Features</div>
 
+- C++ and Python API
 - FP32 and FP16 inference
 - Batch inference
 - Support for varying input dimensions
@@ -35,29 +36,36 @@ The goal of this library is to provide an accessible and robust method for perfo
   
 <details open>
 <summary>Dependencies</summary>
-
+  
+The library has the following dependencies:
 - TensorRT >=8 (including libnvonnxparsers-dev)
 - CUDA >= 10.2
-- OpenCV
+- OpenCV  
+  
+In addition, if you want to build the Python API (optional), the following dependencies are needed:
+- Pybind11
+- Numpy >= 1.7.0
   
 </details>
   
 <details>
-<summary>Building and installing manually</summary>
+<summary>Building and installing with CMake</summary>
   
-The software can be compiled using CMake and a modern C++ compiler (e.g. GCC)
-with support for C++14, using the following steps:
+The software can be built using CMake and a modern C++ compiler (e.g. GCC)
+with support for C++14. First, configure the build with the following steps:
 
 ```bash
 mkdir build
 cd build
-cmake ..
+cmake .. -DBUILD_PYTHON=ON
+```
+If you do not wish to build the Python API, you can instead set ```-DBUILD_PYTHON=OFF```. Next, you can build and install using
+```
 make
-```
-This will build all of the example applications, as well as a shared library <em>yolov5-tensorrt.so</em>. Next, you can install the library using:
-```
 sudo make install
 ```  
+This will build and install all of the example applications, as well as a shared library <em>yolov5-tensorrt.so</em>.
+
 </details>
     
  
@@ -67,7 +75,7 @@ sudo make install
 <details>
 <summary>Command-line Usage</summary>
   
-In addition to the C++ API, the library also comes with various tools/demos. Assuming that your YOLOv5 model is stored as <em>yolov5.onnx</em>, you can build a TensorRT engine using:
+In addition to the API, the library also comes with various tools/demos. Assuming that your YOLOv5 model is stored as <em>yolov5.onnx</em>, you can build a TensorRT engine using:
 
   
 ```bash
@@ -108,9 +116,34 @@ std::vector<yolov5::Detection> detections;
 detector.detect(image, &detections);
 ```
 
-  
 </details>
 
+<details>
+<summary>Python usage</summary>
+
+Import the ```yolov5tensorrt``` package in your code. Assuming that your YOLOv5 model is stored as <em>yolov5.onnx</em>, you can then build the TensorRT engine using just three lines of Python code:
+  
+```python
+builder = yolov5tensorrt.Builder()
+builder.init()
+builder.build("yolov5.onnx", "yolov5.engine")
+```
+
+Next, you can detect objects using the <em>Detector</em> class with the following code:
+  
+```python
+detector = yolov5tensorrt.Detector()
+detector.init()
+detector.loadEngine("yolov5.engine")
+
+image = cv2.imread("image.png")
+
+r, detections = detector.detect(image);
+```
+
+</details>
+  
+  
 <details>
 <summary>Examples</summary>
 
@@ -118,12 +151,12 @@ Various **documented** examples can be found in the [examples](examples) directo
 
 In order to **build** a TensorRT engine based on an ONNX model, the following
 tool/example is available:
-- [build_engine](examples/builder): build a TensorRT engine based on your ONNX model
+- [build_engine](examples/builder) (C++/Python): build a TensorRT engine based on your ONNX model
 
 For **object detection**, the following tools/examples are available:
-- [process_image](examples/image): detect objects in a single image
-- [process_live](examples/live): detect objects live in a video stream (e.g. webcam)
-- [process_batch](examples/batch): detect objects in multiple images (batch inference)
+- [process_image](examples/image) (C++/Python): detect objects in a single image
+- [process_live](examples/live) (C++): detect objects live in a video stream (e.g. webcam)
+- [process_batch](examples/batch) (C++/Python): detect objects in multiple images (batch inference)
   
 </details>
 
