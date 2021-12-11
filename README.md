@@ -138,7 +138,7 @@ detector.loadEngine("yolov5.engine")
 
 image = cv2.imread("image.png")
 
-r, detections = detector.detect(image);
+r, detections = detector.detect(image)
 ```
 
 </details>
