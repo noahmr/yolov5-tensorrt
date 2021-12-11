@@ -8,6 +8,9 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -g -pthread")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
+option(BUILD_PYTHON "Build the Python bindings" OFF)
 
 
 ## Pkg-Config support when installing
@@ -24,6 +27,12 @@ find_package(OpenCV REQUIRED)
 find_package(CUDA REQUIRED)
 
 
+if(BUILD_PYTHON)
+    # use pybind11 to build the Python bindings
+    find_package(pybind11 REQUIRED)
+endif()
+
+
 ## Sources
 #####################
 
@@ -32,6 +41,7 @@ file(GLOB_RECURSE YOLOV5_INCLUDE_FILES "include/*.hpp*")
 
 add_subdirectory(src)
 
+add_subdirectory(bindings)
 
 ## Examples
 #####################
