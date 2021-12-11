@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 #
 # Author:           Noah van der Meer
 # Description:      YoloV5-TensorRT example: inference on a batch of images
