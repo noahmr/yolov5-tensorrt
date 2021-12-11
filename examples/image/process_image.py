@@ -130,7 +130,7 @@ def main(args):
     #
     # Visualize all of the detections
     #
-    # The detections are provided in the form of yolov5.Detection 
+    # The detections are provided in the form of yolov5tensorrt.Detection 
     # objects. These contain information regarding the location in the image,
     # confidence, and class.
     #
