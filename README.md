@@ -24,8 +24,7 @@ The goal of this library is to provide an accessible and robust method for perfo
 - Extensive documentation available on all classes, methods and functions
 
 
-
-## <div align="center">Install</div>
+## <div align="center">Platforms</div>
 
 <details open>
 <summary>Platforms</summary>
@@ -36,30 +35,40 @@ The goal of this library is to provide an accessible and robust method for perfo
   
 <details open>
 <summary>Dependencies</summary>
-  
-The library has the following dependencies:
+ 
 - TensorRT >=8 (including libnvonnxparsers-dev)
 - CUDA >= 10.2
 - OpenCV  
-  
-In addition, if you want to build the Python API (optional), the following dependencies are needed:
-- Pybind11
-- Numpy >= 1.7.0
+- Pybind11 (optional, for Python API)
   
 </details>
+
+
+## <div align="center">Install</div>
+
+<details>
+<summary>Build/Install with Pip (for just Python)</summary>
+  
+Ensure that at least the TensorRT, CUDA and OpenCV dependencies mentioned above are installed on your system, the rest can be handled by Pip. You can install the library using:
+```bash
+pip3 install .
+```
+This will build and install the only the Python API, as well as the example scripts.
+</details>
+  
+  
   
 <details>
-<summary>Building and installing with CMake</summary>
+<summary>Build/Install with CMake (for C++ and Python)</summary>
   
-The software can be built using CMake and a modern C++ compiler (e.g. GCC)
-with support for C++14. First, configure the build with the following steps:
+Configure the build with CMake:
 
 ```bash
 mkdir build
 cd build
-cmake .. -DBUILD_PYTHON=ON
+cmake .. -DBUILD_PYTHON=OFF
 ```
-If you do not wish to build the Python API, you can instead set ```-DBUILD_PYTHON=OFF```. Next, you can build and install using
+If wish to also build the Python API, you can instead set ```-DBUILD_PYTHON=ON```. Next, build and install using
 ```
 make
 sudo make install
@@ -67,7 +76,7 @@ sudo make install
 This will build and install all of the example applications, as well as a shared library <em>yolov5-tensorrt.so</em>.
 
 </details>
-    
+
  
 
 ## <div align="center">Usage</div>
@@ -75,26 +84,26 @@ This will build and install all of the example applications, as well as a shared
 <details>
 <summary>Command-line Usage</summary>
   
-In addition to the API, the library also comes with various tools/demos. Assuming that your YOLOv5 model is stored as <em>yolov5.onnx</em>, you can build a TensorRT engine using:
+The library also comes with various tools/demos. If your YOLOv5 model is stored as <em>yolov5.onnx</em>, you can build a TensorRT engine using:
 
   
 ```bash
-./build_engine --model yolov5.onnx --output yolov5.engine
+build_engine --model yolov5.onnx --output yolov5.engine
 ```
-The resulting engine will be stored to disk at <em>yolov5.engine</em>. For an overview of all available options for this tool, see [build_engine](examples/builder).
+The resulting engine will be stored to disk at <em>yolov5.engine</em>. See [build_engine](examples/builder) for more information.
   
 After the engine has been stored, you can load it and detect objects as following:
 ```bash
-./process_image --engine yolov5.engine --input image.png --output result.png
+process_image --engine yolov5.engine --input image.png --output result.png
 ```
-A visualization of the result will be stored to disk at <em>result.png</em>. For an overview of all available options for this tool, see [process_image](examples/image).
+A visualization of the result will be stored to disk at <em>result.png</em>. See [process_image](examples/image) for more information.
   
 </details>
 
 <details open>
 <summary>C++ usage</summary>
 
-Include ```yolov5_builder.hpp``` in your code. Assuming that your YOLOv5 model is stored as <em>yolov5.onnx</em>, you can then build the TensorRT engine using just three lines of C++ code:
+Include ```yolov5_builder.hpp``` in your code. If your YOLOv5 model is stored as <em>yolov5.onnx</em>, you can build the TensorRT engine using three lines of C++ code:
   
 ```cpp
 yolov5::Builder builder;
@@ -103,7 +112,7 @@ builder.build("yolov5.onnx", "yolov5.engine");
 ```
 
   
-Include ```yolov5_detector.hpp``` in your code. You can then detect objects using the <em>Detector</em> class, with the following code:
+For detection, include ```yolov5_detector.hpp``` in your code. You can detect objects with the following code:
   
 ```cpp
 yolov5::Detector detector;
@@ -121,7 +130,7 @@ detector.detect(image, &detections);
 <details>
 <summary>Python usage</summary>
 
-Import the ```yolov5tensorrt``` package in your code. Assuming that your YOLOv5 model is stored as <em>yolov5.onnx</em>, you can then build the TensorRT engine using just three lines of Python code:
+Import the ```yolov5tensorrt``` package in your code. If your YOLOv5 model is stored as <em>yolov5.onnx</em>, you can build the TensorRT engine using three lines of Python code:
   
 ```python
 builder = yolov5tensorrt.Builder()
@@ -129,7 +138,7 @@ builder.init()
 builder.build("yolov5.onnx", "yolov5.engine")
 ```
 
-Next, you can detect objects using the <em>Detector</em> class with the following code:
+Next, you can detect objects using with the following code:
   
 ```python
 detector = yolov5tensorrt.Detector()
@@ -231,4 +240,4 @@ If you like this library and would like to cite it, please use the following (La
 
 Copyright (c) 2021, Noah van der Meer
 
-This software is licenced under the MIT license, see [LICENCE.md](LICENCE.md).
+This software is licenced under the MIT license, which can be found in [LICENCE.md](LICENCE.md). By using, distributing, or contributing to this project, you agree to the terms and conditions of this license.
