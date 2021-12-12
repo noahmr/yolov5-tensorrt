@@ -68,7 +68,7 @@ mkdir build
 cd build
 cmake .. -DBUILD_PYTHON=OFF
 ```
-If wish to also build the Python API, you can instead set ```-DBUILD_PYTHON=ON```. Next, build and install using
+If wish to also build and install the Python API, you can instead set ```-DBUILD_PYTHON=ON```. Next, build and install using
 ```
 make
 sudo make install
