@@ -202,6 +202,7 @@ pkg-config --libs yolov5-tensorrt
 <summary>Additional Resources</summary>
   
 - [Use with Stereolabs ZED](https://github.com/noahmr/zed-yolov5)
+- [AI at RobotSports (Kaggle)](https://www.kaggle.com/charel/yolov5-1st-place-world-championships-robocup-2021)
 </details>
   
   
