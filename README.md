@@ -164,7 +164,7 @@ tool/example is available:
 
 For **object detection**, the following tools/examples are available:
 - [process_image](examples/image) (C++/Python): detect objects in a single image
-- [process_live](examples/live) (C++): detect objects live in a video stream (e.g. webcam)
+- [process_live](examples/live) (C++/Python): detect objects live in a video stream (e.g. webcam)
 - [process_batch](examples/batch) (C++/Python): detect objects in multiple images (batch inference)
   
 </details>
